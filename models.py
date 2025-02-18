@@ -2,6 +2,7 @@ from pydantic import BaseModel, ConfigDict
 from typing import Optional
 from sqlalchemy import Column, Integer, String, Float, Boolean, DateTime, ForeignKey, BigInteger, Text
 from sqlalchemy.orm import relationship, declarative_base
+from datetime import datetime
 
 Base = declarative_base()
 
@@ -32,7 +33,6 @@ class App(Base):
     developer_id = Column(String, ForeignKey("developers.developer_id"))
     category_id = Column(Integer, ForeignKey("categories.category_id"))
     rating = Column(Float)
-    """
     rating_count = Column(BigInteger)
     installs = Column(String(50))
     minimum_installs = Column(BigInteger)
@@ -48,7 +48,7 @@ class App(Base):
     ad_supported = Column(Boolean, default=False)
     in_app_purchases = Column(Boolean, default=False)
     editors_choice = Column(Boolean, default=False)
-    """
+    
 
     # Relationships
     developer = relationship("Developer", back_populates="apps")
@@ -81,7 +81,6 @@ class AppSchema(BaseModel):
     developer_id: str
     category_id: int
     rating: Optional[float]
-    """
     rating_count: Optional[int]
     installs: Optional[str]
     minimum_installs: Optional[int]
@@ -90,14 +89,14 @@ class AppSchema(BaseModel):
     price: Optional[float] = 0.0
     currency: Optional[str]
     size: Optional[float]
-    released: Optional[str]
-    last_updated: Optional[str]
+    released: Optional[datetime]
+    last_updated: Optional[datetime]
     content_rating: Optional[str]
     privacy_policy: Optional[str]
     ad_supported: Optional[bool] = False
     in_app_purchases: Optional[bool] = False
     editors_choice: Optional[bool] = False
-    """
+    
 
     class Config:
         ConfigDict(from_attributes=True)

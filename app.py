@@ -15,7 +15,7 @@ url_object = URL.create(
     port=5432
     )
 
-engine = create_engine(url_object,execution_options={"schema_translate_map": {None: "public"}})
+engine = create_engine(url_object,execution_options={"schema_translate_map": {None: "googleplay"}})
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
@@ -151,7 +151,7 @@ def read_app(app_id: str, db: Session = Depends(get_db)):
 # POST a new app
 @app.post("/apps/", response_model=AppSchema)
 def create_app(app: AppSchema, db: Session = Depends(get_db)):
-    db_app = App(**app.dict())
+    db_app = App(**app.model_dump())
     db.add(db_app)
     db.commit()
     db.refresh(db_app)
@@ -163,7 +163,7 @@ def update_app(app_id: str, app: AppSchema, db: Session = Depends(get_db)):
     db_app = db.query(App).filter(App.app_id == app_id).first()
     if db_app is None:
         raise HTTPException(status_code=404, detail="App not found")
-    for key, value in app.dict(exclude_unset=True).items():
+    for key, value in app.model_dump(exclude_unset=True).items():
         setattr(db_app, key, value)
     db.commit()
     db.refresh(db_app)
